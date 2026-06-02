@@ -114,5 +114,4 @@ The system provides:
 
 Ngoh Jia Ying
 
-Tunku Abdul Rahman University of Management and Technology (TARUMT)
 
