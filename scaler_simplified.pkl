@@ -1,0 +1,334 @@
+{
+ "cells": [
+  {
+   "cell_type": "code",
+   "execution_count": 1,
+   "id": "3948dd9c-c4f1-4bec-b636-19a46cca6f9f",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "import pandas as pd\n",
+    "from sklearn.model_selection import train_test_split\n",
+    "from sklearn.preprocessing import StandardScaler\n",
+    "from imblearn.over_sampling import SMOTE\n",
+    "\n",
+    "# Load dataset\n",
+    "df = pd.read_csv(r\"D:\\Study\\Degree\\Y2S1\\DS\\taiwanese+bankruptcy+prediction\\data.csv\")\n",
+    "\n",
+    "df.columns = df.columns.str.strip()\n",
+    "\n",
+    "selected_features = [\n",
+    "    'Debt ratio %',                     # Debt Ratio\n",
+    "    'Current Ratio',                    # Current Ratio\n",
+    "    'Quick Ratio',                      # Quick Ratio\n",
+    "    'Operating Profit Rate',            # Operating Profit Rate\n",
+    "    'After-tax net Interest Rate',      # Net Profit Rate (proxy)\n",
+    "    'Net Income to Total Assets',       \n",
+    "    \"Net Income to Stockholder's Equity\" \n",
+    "]\n",
+    "\n",
+    "X = df[selected_features]\n",
+    "y = df['Bankrupt?']\n",
+    "\n",
+    "# Train/test split\n",
+    "X_train, X_test, y_train, y_test = train_test_split(\n",
+    "    X, y, test_size=0.3, stratify=y, random_state=42\n",
+    ")\n",
+    "\n",
+    "# Scale features\n",
+    "scaler = StandardScaler()\n",
+    "X_train_scaled = scaler.fit_transform(X_train)\n",
+    "X_test_scaled = scaler.transform(X_test)\n",
+    "\n",
+    "# Handle imbalance with SMOTE\n",
+    "smote = SMOTE(random_state=42)\n",
+    "X_train_bal, y_train_bal = smote.fit_resample(X_train_scaled, y_train)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 2,
+   "id": "b93a6e62-10ae-42f1-9c1c-247d83de205b",
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "Epoch 1/15\n"
+     ]
+    },
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "C:\\Users\\johns\\anaconda3\\Lib\\site-packages\\keras\\src\\layers\\core\\dense.py:92: UserWarning: Do not pass an `input_shape`/`input_dim` argument to a layer. When using Sequential models, prefer using an `Input(shape)` object as the first layer in the model instead.\n",
+      "  super().__init__(activity_regularizer=activity_regularizer, **kwargs)\n"
+     ]
+    },
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "\u001b[1m231/231\u001b[0m \u001b[32m━━━━━━━━━━━━━━━━━━━━\u001b[0m\u001b[37m\u001b[0m \u001b[1m2s\u001b[0m 4ms/step - accuracy: 0.8028 - loss: 0.4554 - val_accuracy: 0.8409 - val_loss: 0.3785\n",
+      "Epoch 2/15\n",
+      "\u001b[1m231/231\u001b[0m \u001b[32m━━━━━━━━━━━━━━━━━━━━\u001b[0m\u001b[37m\u001b[0m \u001b[1m1s\u001b[0m 3ms/step - accuracy: 0.8474 - loss: 0.3480 - val_accuracy: 0.8642 - val_loss: 0.3967\n",
+      "Epoch 3/15\n",
+      "\u001b[1m231/231\u001b[0m \u001b[32m━━━━━━━━━━━━━━━━━━━━\u001b[0m\u001b[37m\u001b[0m \u001b[1m1s\u001b[0m 2ms/step - accuracy: 0.8548 - loss: 0.3398 - val_accuracy: 0.8398 - val_loss: 0.4577\n",
+      "Epoch 4/15\n",
+      "\u001b[1m231/231\u001b[0m \u001b[32m━━━━━━━━━━━━━━━━━━━━\u001b[0m\u001b[37m\u001b[0m \u001b[1m1s\u001b[0m 2ms/step - accuracy: 0.8599 - loss: 0.3336 - val_accuracy: 0.8501 - val_loss: 0.4117\n",
+      "Epoch 5/15\n",
+      "\u001b[1m231/231\u001b[0m \u001b[32m━━━━━━━━━━━━━━━━━━━━\u001b[0m\u001b[37m\u001b[0m \u001b[1m1s\u001b[0m 2ms/step - accuracy: 0.8591 - loss: 0.3265 - val_accuracy: 0.8609 - val_loss: 0.3975\n",
+      "Epoch 6/15\n",
+      "\u001b[1m231/231\u001b[0m \u001b[32m━━━━━━━━━━━━━━━━━━━━\u001b[0m\u001b[37m\u001b[0m \u001b[1m1s\u001b[0m 2ms/step - accuracy: 0.8618 - loss: 0.3273 - val_accuracy: 0.8458 - val_loss: 0.4133\n",
+      "Epoch 7/15\n",
+      "\u001b[1m231/231\u001b[0m \u001b[32m━━━━━━━━━━━━━━━━━━━━\u001b[0m\u001b[37m\u001b[0m \u001b[1m1s\u001b[0m 2ms/step - accuracy: 0.8605 - loss: 0.3248 - val_accuracy: 0.8718 - val_loss: 0.3559\n",
+      "Epoch 8/15\n",
+      "\u001b[1m231/231\u001b[0m \u001b[32m━━━━━━━━━━━━━━━━━━━━\u001b[0m\u001b[37m\u001b[0m \u001b[1m1s\u001b[0m 2ms/step - accuracy: 0.8654 - loss: 0.3208 - val_accuracy: 0.8485 - val_loss: 0.4104\n",
+      "Epoch 9/15\n",
+      "\u001b[1m231/231\u001b[0m \u001b[32m━━━━━━━━━━━━━━━━━━━━\u001b[0m\u001b[37m\u001b[0m \u001b[1m1s\u001b[0m 2ms/step - accuracy: 0.8651 - loss: 0.3245 - val_accuracy: 0.8615 - val_loss: 0.3943\n",
+      "Epoch 10/15\n",
+      "\u001b[1m231/231\u001b[0m \u001b[32m━━━━━━━━━━━━━━━━━━━━\u001b[0m\u001b[37m\u001b[0m \u001b[1m1s\u001b[0m 2ms/step - accuracy: 0.8654 - loss: 0.3198 - val_accuracy: 0.8620 - val_loss: 0.3811\n",
+      "Epoch 11/15\n",
+      "\u001b[1m231/231\u001b[0m \u001b[32m━━━━━━━━━━━━━━━━━━━━\u001b[0m\u001b[37m\u001b[0m \u001b[1m1s\u001b[0m 2ms/step - accuracy: 0.8678 - loss: 0.3201 - val_accuracy: 0.8517 - val_loss: 0.4043\n",
+      "Epoch 12/15\n",
+      "\u001b[1m231/231\u001b[0m \u001b[32m━━━━━━━━━━━━━━━━━━━━\u001b[0m\u001b[37m\u001b[0m \u001b[1m1s\u001b[0m 2ms/step - accuracy: 0.8640 - loss: 0.3144 - val_accuracy: 0.8534 - val_loss: 0.3957\n",
+      "Epoch 13/15\n",
+      "\u001b[1m231/231\u001b[0m \u001b[32m━━━━━━━━━━━━━━━━━━━━\u001b[0m\u001b[37m\u001b[0m \u001b[1m1s\u001b[0m 2ms/step - accuracy: 0.8670 - loss: 0.3113 - val_accuracy: 0.8474 - val_loss: 0.4021\n",
+      "Epoch 14/15\n",
+      "\u001b[1m231/231\u001b[0m \u001b[32m━━━━━━━━━━━━━━━━━━━━\u001b[0m\u001b[37m\u001b[0m \u001b[1m1s\u001b[0m 2ms/step - accuracy: 0.8658 - loss: 0.3125 - val_accuracy: 0.8339 - val_loss: 0.4309\n",
+      "Epoch 15/15\n",
+      "\u001b[1m231/231\u001b[0m \u001b[32m━━━━━━━━━━━━━━━━━━━━\u001b[0m\u001b[37m\u001b[0m \u001b[1m1s\u001b[0m 2ms/step - accuracy: 0.8690 - loss: 0.3136 - val_accuracy: 0.8252 - val_loss: 0.4375\n"
+     ]
+    }
+   ],
+   "source": [
+    "from tensorflow.keras.models import Sequential\n",
+    "from tensorflow.keras.layers import Dense, Dropout\n",
+    "\n",
+    "# Define ANN\n",
+    "ann_model = Sequential([\n",
+    "    Dense(64, activation='relu', input_shape=(X_train_bal.shape[1],)),\n",
+    "    Dropout(0.5),\n",
+    "    Dense(32, activation='relu'),\n",
+    "    Dense(1, activation='sigmoid')\n",
+    "])\n",
+    "\n",
+    "# Compile\n",
+    "ann_model.compile(optimizer='adam', loss='binary_crossentropy', metrics=['accuracy'])\n",
+    "\n",
+    "# Train with validation split\n",
+    "history = ann_model.fit(\n",
+    "    X_train_bal, y_train_bal,\n",
+    "    epochs=15,\n",
+    "    batch_size=32,\n",
+    "    validation_split=0.2,\n",
+    "    verbose=1\n",
+    ")\n"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 3,
+   "id": "ef695993-565f-431c-bc7e-a733fd3c0e0c",
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "\u001b[1m64/64\u001b[0m \u001b[32m━━━━━━━━━━━━━━━━━━━━\u001b[0m\u001b[37m\u001b[0m \u001b[1m0s\u001b[0m 1ms/step  \n",
+      "Classification Report (Test):\n",
+      "              precision    recall  f1-score   support\n",
+      "\n",
+      "Not Bankrupt       0.99      0.92      0.95      1980\n",
+      "    Bankrupt       0.24      0.80      0.37        66\n",
+      "\n",
+      "    accuracy                           0.91      2046\n",
+      "   macro avg       0.62      0.86      0.66      2046\n",
+      "weighted avg       0.97      0.91      0.93      2046\n",
+      "\n",
+      "AUC Score: 0.921985001530456\n"
+     ]
+    }
+   ],
+   "source": [
+    "from sklearn.metrics import classification_report, confusion_matrix, roc_auc_score\n",
+    "\n",
+    "# Predictions\n",
+    "y_test_pred_prob = ann_model.predict(X_test_scaled)\n",
+    "y_test_pred = (y_test_pred_prob > 0.5).astype(int)\n",
+    "\n",
+    "print(\"Classification Report (Test):\")\n",
+    "print(classification_report(y_test, y_test_pred, target_names=['Not Bankrupt', 'Bankrupt']))\n",
+    "\n",
+    "print(\"AUC Score:\", roc_auc_score(y_test, y_test_pred_prob))\n"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 4,
+   "id": "622dcdcc-87f6-4d2b-b2b9-1d817ad1d26b",
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "WARNING:absl:You are saving your model as an HDF5 file via `model.save()` or `keras.saving.save_model(model)`. This file format is considered legacy. We recommend using instead the native Keras format, e.g. `model.save('my_model.keras')` or `keras.saving.save_model(model, 'my_model.keras')`. \n"
+     ]
+    }
+   ],
+   "source": [
+    "# Save ANN\n",
+    "ann_model.save(\"ann_model_simplified.h5\")\n",
+    "\n",
+    "# Save Scaler\n",
+    "import pickle\n",
+    "with open(\"scaler_simplified.pkl\", \"wb\") as f:\n",
+    "    pickle.dump(scaler, f)\n"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 2,
+   "id": "fe398702-8740-4ef1-8656-a8b55fe13f28",
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "WARNING:absl:Compiled the loaded model, but the compiled metrics have yet to be built. `model.compile_metrics` will be empty until you train or evaluate the model.\n"
+     ]
+    },
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "\n",
+      "=== Bankruptcy Prediction Prototype (ANN) ===\n",
+      "\n",
+      "Please enter the company's financial ratios:\n",
+      "\n"
+     ]
+    },
+    {
+     "name": "stdin",
+     "output_type": "stream",
+     "text": [
+      "Debt Ratio:  0.1\n",
+      "Current Ratio:  0.3\n",
+      "Quick Ratio:  0.2\n",
+      "Operating Profit Rate:  0.7\n",
+      "After-tax net Interest Rate:  0.8\n",
+      "Return on Assets (ROA):  0.6\n",
+      "Return on Equity (ROE):  0.8\n"
+     ]
+    },
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "\u001b[1m1/1\u001b[0m \u001b[32m━━━━━━━━━━━━━━━━━━━━\u001b[0m\u001b[37m\u001b[0m \u001b[1m0s\u001b[0m 52ms/step\n",
+      "\n",
+      "=== Prediction Result ===\n",
+      "\n",
+      "Probability of NOT Bankrupt: 26.05%\n",
+      "Probability of Bankrupt: 73.95%\n",
+      "\n",
+      "⚠️ Company at RISK of Bankruptcy\n"
+     ]
+    }
+   ],
+   "source": [
+    "##### import numpy as np\n",
+    "import pickle\n",
+    "import pandas as pd\n",
+    "from tensorflow.keras.models import load_model\n",
+    "\n",
+    "# Load model & scaler\n",
+    "ann_model = load_model(\"ann_model_simplified.h5\")\n",
+    "with open(\"scaler_simplified.pkl\", \"rb\") as f:\n",
+    "    scaler = pickle.load(f)\n",
+    "\n",
+    "print(\"\\n=== Bankruptcy Prediction Prototype (ANN) ===\\n\")\n",
+    "print(\"Please enter the company's financial ratios:\\n\")\n",
+    "\n",
+    "# Collect inputs\n",
+    "debt_ratio = float(input(\"Debt Ratio: \"))\n",
+    "current_ratio = float(input(\"Current Ratio: \"))\n",
+    "quick_ratio = float(input(\"Quick Ratio: \"))\n",
+    "operating_profit_rate = float(input(\"Operating Profit Rate: \"))\n",
+    "tax_rate = float(input(\"After-tax net Interest Rate: \"))\n",
+    "income_assets = float(input(\"Return on Assets (ROA): \"))\n",
+    "income_equity = float(input(\"Return on Equity (ROE): \"))\n",
+    "\n",
+    "# Build input\n",
+    "sample = [[debt_ratio, current_ratio, quick_ratio,\n",
+    "           operating_profit_rate, tax_rate, income_assets, income_equity]]\n",
+    "\n",
+    "sample_df = pd.DataFrame(sample, columns=[\n",
+    "    'Debt ratio %',\n",
+    "    'Current Ratio',\n",
+    "    'Quick Ratio',\n",
+    "    'Operating Profit Rate',\n",
+    "    'After-tax net Interest Rate',\n",
+    "    'Net Income to Total Assets',\n",
+    "    \"Net Income to Stockholder's Equity\"\n",
+    "])\n",
+    "\n",
+    "sample_scaled = scaler.transform(sample_df)\n",
+    "\n",
+    "# Predict bankruptcy with ANN\n",
+    "prediction_prob = ann_model.predict(sample_scaled)[0][0]\n",
+    "\n",
+    "# Calculate probabilities\n",
+    "prob_not_bankrupt = 1 - prediction_prob\n",
+    "prob_bankrupt = prediction_prob\n",
+    "\n",
+    "# Decision (threshold = 0.5)\n",
+    "prediction = 1 if prediction_prob > 0.5 else 0\n",
+    "\n",
+    "print(\"\\n=== Prediction Result ===\\n\")\n",
+    "print(f\"Probability of NOT Bankrupt: {prob_not_bankrupt*100:.2f}%\")\n",
+    "print(f\"Probability of Bankrupt: {prob_bankrupt*100:.2f}%\")\n",
+    "\n",
+    "if prediction == 1:\n",
+    "    print(\"\\n⚠️ Company at RISK of Bankruptcy\")\n",
+    "else:\n",
+    "    print(\"\\n✅ Company is NOT Bankrupt\")\n",
+    "    \n"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "fc6f6898-df85-476f-b2b6-b338c597d90d",
+   "metadata": {},
+   "outputs": [],
+   "source": []
+  }
+ ],
+ "metadata": {
+  "kernelspec": {
+   "display_name": "Python 3 (ipykernel)",
+   "language": "python",
+   "name": "python3"
+  },
+  "language_info": {
+   "codemirror_mode": {
+    "name": "ipython",
+    "version": 3
+   },
+   "file_extension": ".py",
+   "mimetype": "text/x-python",
+   "name": "python",
+   "nbconvert_exporter": "python",
+   "pygments_lexer": "ipython3",
+   "version": "3.13.5"
+  }
+ },
+ "nbformat": 4,
+ "nbformat_minor": 5
+}

@@ -1,0 +1,54 @@
+import streamlit as st
+import pandas as pd
+import joblib
+from tensorflow.keras.models import load_model
+
+# Load saved artifacts
+scaler = joblib.load("scaler.pkl")
+model = load_model("ann_model.h5")
+
+st.header("Bankruptcy Prediction")
+
+# Must match training feature names
+feature_ranges = {
+    'Debt ratio %': (0.0, 2.5),
+    'Current Ratio': (0.0, 5.0),
+    'Quick Ratio': (0.0, 3.0),
+    'Operating Profit Rate': (0, 1),
+    'After-tax net Interest Rate': (0, 1),
+    'Net Income to Total Assets': (0, 1),
+    "Net Income to Stockholder's Equity": (0, 4)
+}
+
+inputs = {}
+normalized_inputs = {}
+for feature, (low, high) in feature_ranges.items():
+    val = st.number_input(
+        f"Enter {feature} (Range: {low} to {high})",
+        value=0.0,
+        min_value=float(low),
+        max_value=float(high)
+    )
+    inputs[feature] = val
+    # normalize to 0–1 range
+    normalized_inputs[feature] = (val - low) / (high - low) if high > low else 0
+
+if st.button("Predict"):
+    # Convert to DataFrame with same columns as training
+    user_data = pd.DataFrame([normalized_inputs])
+
+    scaled_data = scaler.transform(user_data)
+
+    # Predict
+    prob = model.predict(scaled_data)[0][0]
+    prob_not = 1 - prob
+    pred_class = 1 if prob >= 0.5 else 0
+
+    st.subheader("=== Prediction Result ===")
+    st.write(f"Probability of NOT Bankrupt: **{prob_not*100:.2f}%**")
+    st.write(f"Probability of Bankrupt: **{prob*100:.2f}%**")
+
+    if pred_class == 1:
+        st.warning("⚠ Company at RISK of Bankruptcy")
+    else:
+        st.success("✅ Company is NOT Bankrupt")
